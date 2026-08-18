@@ -73,15 +73,35 @@ export class Blockchain {
   }
 
   isChainValid() {
-    for (let i = 1; i < this.chain.length; i += 1) {
-      const current = this.chain[i];
-      const previous = this.chain[i - 1];
+  const genesis = this.chain[0];
 
-      if (!current.hasValidHash(this.difficulty)) return false;
-      if (current.previousHash !== previous.hash) return false;
-      if (current.index !== previous.index + 1) return false;
+  if (!genesis.hasValidHash(this.difficulty)) {
+    return false;
+  }
+
+  if (genesis.index !== 0 || genesis.previousHash !== '0') {
+    return false;
+  }
+
+  for (let i = 1; i < this.chain.length; i += 1) {
+    const current = this.chain[i];
+    const previous = this.chain[i - 1];
+
+    if (!current.hasValidHash(this.difficulty)) {
+      return false;
     }
 
-    return true;
+    if (current.previousHash !== previous.hash) {
+      return false;
+    }
+
+    if (current.index !== previous.index + 1) {
+      return false;
+    }
   }
+
+  return true;
+}
+
+
 }
